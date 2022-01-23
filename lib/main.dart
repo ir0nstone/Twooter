@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'auth/register.dart';
 import 'auth/login.dart';
-
-import 'view/account.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,23 +22,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // function to load the user currently logged in
-  _loadLoggedInUser() async {
-    // User? user = FirebaseAuth.instance.currentUser;
-    //
-    // if (user != null) {
-    //   Navigator.of(context).pushReplacement(
-    //     MaterialPageRoute(
-    //       builder: (context) => AccountPage(user.uid),
-    //     ),
-    //   );
-    // }
-  }
 
   @override
   Widget build(BuildContext context) {
-    // _loadLoggedInUser();
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Log In'),
