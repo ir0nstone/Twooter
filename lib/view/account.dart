@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
-class AccountPage extends StatelessWidget {
-  final String uid;
+import 'package:firebase_auth/firebase_auth.dart';
 
-  const AccountPage(this.uid, {Key? key}) : super(key: key);
+class AccountPage extends StatelessWidget {
+  final User user;
+
+  const AccountPage(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    String uid = user.uid;
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Account'),

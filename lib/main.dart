@@ -1,13 +1,19 @@
 import 'package:flutter/material.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'auth/register.dart';
 import 'auth/login.dart';
+import 'view/account.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
 
   runApp(const MaterialApp(
     home: HomePage(),
@@ -22,14 +28,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  loadLoggedInUser() async {
+    User? user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => AccountPage(user),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Log In'),
-      ),
-      body: Center(
+    loadLoggedInUser();
+
+    Center stuff = Center(
         child: Column(
           children: [
             Container(
@@ -59,7 +74,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         )
-      )
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Log In'),
+      ),
+      body: stuff
     );
   }
 }
