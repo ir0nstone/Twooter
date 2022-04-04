@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-import 'auth/register.dart';
-import 'auth/login.dart';
-import 'view/account.dart';
+import 'preauth/register.dart';
+import 'preauth/login.dart';
+import 'postauth/account.dart';
 
 import 'firebase_options.dart';
 
