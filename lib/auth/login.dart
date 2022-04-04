@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:twooter/view/account.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -71,22 +72,26 @@ class _LoginFormState extends State<LoginForm> {
           // Submit Button
           ElevatedButton(
             onPressed: () async {
-            if (!_formKey.currentState!.validate()) return;
+              if (!_formKey.currentState!.validate()) return;
 
-            try {
-              await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: emailController.text,
-                  password: passwordController.text
-              );
-
-              Navigator.pop(context);
-            } on FirebaseAuthException catch (e) {
-              if (e.code == 'user-not-found') {
-                print('No user found for that email.');
-              } else if (e.code == 'wrong-password') {
-                print('Wrong password provided for that user.');
+              try {
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: emailController.text,
+                    password: passwordController.text
+                ).then((userCredential) => {
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(
+                      builder: (context) => AccountPage(userCredential.user!),
+                    ),
+                  )
+                });
+              } on FirebaseAuthException catch (e) {
+                if (e.code == 'user-not-found') {
+                  print('No user found for that email.');
+                } else if (e.code == 'wrong-password') {
+                  print('Wrong password provided for that user.');
+                }
               }
-            }
           },
             child: const Text('Log In'),
           ),

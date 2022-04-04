@@ -82,9 +82,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 Navigator.pop(context);
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  // password too weak
+                  print('Weak Password!');
                 } else if (e.code == 'email-already-in-use') {
-                  // email already exists
+                  print('Email in Use!');
                 }
               } catch (e) {
                 print(e);

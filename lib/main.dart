@@ -32,19 +32,19 @@ class _HomePageState extends State<HomePage> {
     User? user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => AccountPage(user),
-        ),
-      );
+      WidgetsBinding.instance!.addPostFrameCallback((_) {   // https://fluttercorner.com/error-thrown-on-navigator-pop-until-debuglocked-is-not-true/
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => AccountPage(user),
+          ),
+        );
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    loadLoggedInUser();
-
-    Center stuff = Center(
+    Center buttons = Center(
         child: Column(
           children: [
             Container(
@@ -80,7 +80,20 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Log In'),
       ),
-      body: stuff
+      body: FutureBuilder(
+        future: loadLoggedInUser(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            return buttons;
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      )
     );
   }
 }
+
+// https://firebase.flutter.dev/docs/auth/usage/
+// https://blog.logrocket.com/implementing-firebase-authentication-in-a-flutter-app/#register-a-new-user
