@@ -1,24 +1,13 @@
-import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
-import '../main.dart';
+import 'package:twooter/main.dart';
 
-class AccountPage extends StatelessWidget {
+class TwootScreen extends StatelessWidget {
   final User user;
 
-  const AccountPage(this.user, {Key? key}) : super(key: key);
-
-  Future<List> getPosts() async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    QuerySnapshot posts = await firestore.collection('posts').get();
-    // Get data from docs and convert map to List
-    final allData = posts.docs.map((doc) => doc.data()).toList();
-
-    print(allData);
-    return allData;
-  }
+  const TwootScreen(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,24 +18,7 @@ class AccountPage extends StatelessWidget {
 
     String uid = user.uid;
 
-    Column onLoadBody = Column(
-      children: [
-        Text('Uid: $uid'),
-
-        ElevatedButton(
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              // send back navigator
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ),
-              );
-            },
-            child: const Text('Sign Out')
-        ),
-
-        Form(
+    Form onLoadBody = Form(
           key: _formKey,
           child: Column(
             children: <Widget>[
@@ -87,25 +59,13 @@ class AccountPage extends StatelessWidget {
               ),
             ],
           ),
-        )
-      ],
-    );
+        );
 
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Account'),
+          title: const Text('Twoot'),
         ),
-        body: FutureBuilder(
-            future: getPosts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return onLoadBody;
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-        )
+        body: onLoadBody
     );
   }
 }

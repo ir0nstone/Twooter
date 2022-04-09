@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'preauth/register.dart';
 import 'preauth/login.dart';
-import 'postauth/account.dart';
+import 'postauth/authenticated.dart';
 
 import 'firebase_options.dart';
 
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
       WidgetsBinding.instance!.addPostFrameCallback((_) {   // https://fluttercorner.com/error-thrown-on-navigator-pop-until-debuglocked-is-not-true/
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => AccountPage(user),
+            builder: (context) => AuthenticatedPage(user),
           ),
         );
       });
