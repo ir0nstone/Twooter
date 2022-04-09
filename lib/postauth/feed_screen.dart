@@ -40,7 +40,7 @@ class FeedScreen extends StatelessWidget {
     return allData;
   }
 
-  Widget postToWidget(Post post) {
+  Column postToColumn(Post post) {
     Column postColumn = Column(
       children: [
         Container(
@@ -72,9 +72,9 @@ class FeedScreen extends StatelessWidget {
     return postColumn;
   }
 
-  Column postsToColumn(List<Post> postList) {
-    List<Widget> postWidgets = postList.map((p) => postToWidget(p)).toList();
-    Column posts = Column(children: postWidgets);
+  ListView postsToColumn(List<Post> postList) {
+    List<Widget> postWidgets = postList.map((p) => postToColumn(p)).toList();
+    ListView posts = ListView(children: postWidgets);
 
     return posts;
   }
