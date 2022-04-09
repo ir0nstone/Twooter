@@ -9,14 +9,22 @@ class TwootScreen extends StatelessWidget {
 
   const TwootScreen(this.user, {Key? key}) : super(key: key);
 
+  void sendTwoot(String title, String text) async {
+    print(title + ' : ' + text);
+
+    FirebaseFirestore.instance.runTransaction((Transaction transaction) async {
+      CollectionReference reference = FirebaseFirestore.instance.collection('posts');
+
+      await reference.add({"title": title, "text": text});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
 
     final titleController = TextEditingController();
     final textController = TextEditingController();
-
-    String uid = user.uid;
 
     Form onLoadBody = Form(
           key: _formKey,
@@ -53,7 +61,9 @@ class TwootScreen extends StatelessWidget {
               // Submit Button
               ElevatedButton(
                 onPressed: () async {
-                  print(titleController.text + ' ' + textController.text);
+                  sendTwoot(titleController.text, textController.text);
+                  titleController.text = '';
+                  textController.text = '';
                 },
                 child: const Text('Twoot!'),
               ),
