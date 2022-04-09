@@ -18,10 +18,10 @@ class Post {
     required this.text
   });
 
-  Post.fromSnapshot(QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
-    : documentId = snapshot.id,
-        title = snapshot.data()['title'],
-        text = snapshot.data()['text'] as String;
+  Post.fromSnapshot(QueryDocumentSnapshot<Object?> doc)
+    : documentId = doc.id,
+      title = doc.get('title'),
+      text = doc.get('text');
 }
 
 class FeedScreen extends StatelessWidget {
@@ -34,7 +34,7 @@ class FeedScreen extends StatelessWidget {
     // Get data from docs and convert map to List
 
     final allData = posts.docs.map(
-        (doc) => Post(documentId: doc.id, title: doc.get('title'), text: doc.get('text'))
+            (doc) => Post.fromSnapshot(doc)
     ).toList();
 
     return allData;
@@ -82,20 +82,20 @@ class FeedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Feed'),
-        ),
-        body: FutureBuilder(
-            future: getPosts(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return postsToColumn(snapshot.data as List<Post>);
-              }
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+      appBar: AppBar(
+        title: const Text('Feed'),
+      ),
+      body: FutureBuilder(
+          future: getPosts(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return postsToColumn(snapshot.data as List<Post>);
             }
-        ),
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+      ),
     );
   }
 }
