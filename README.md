@@ -1,16 +1,16 @@
-# social_media
+# Twooter
 
-A social media app
+A super basic Social Media application.
 
-## Getting Started
+Currently, the UI is lacking, but the basic functionality is there:
 
-This project is a starting point for a Flutter application.
+* Account Creation + Signout
+* A Feed of recent "twoots"
+  * Currently shows ALL twoots, there are no "follow" features
+* The ability to send "twoots", which then appear in the Feed
 
-A few resources to get you started if this is your first Flutter project:
+This application is written using Flutter and Firebase for cloud storage, for purely educational purposes.
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# Hopefully At Some Point (TODO)
+* Follows
+* Slightly nicer UI
