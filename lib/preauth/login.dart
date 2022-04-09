@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:twooter/postauth/account.dart';
+import 'package:twooter/postauth/authenticated.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -81,7 +81,7 @@ class _LoginFormState extends State<LoginForm> {
                 ).then((userCredential) => {
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
-                      builder: (context) => AccountPage(userCredential.user!),
+                      builder: (context) => AuthenticatedPage(userCredential.user!),
                     ),
                   )
                 });
