@@ -1,33 +1,37 @@
-import 'dart:io';
+import 'package:intl/intl.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-import 'package:twooter/main.dart';
 
 @immutable
 class Post {
   final String documentId;
   final String title;
   final String text;
+  final Timestamp createdOn;
+  final String userID;
 
   const Post({
     required this.documentId,
     required this.title,
-    required this.text
+    required this.text,
+    required this.createdOn,
+    required this.userID
   });
 
   Post.fromSnapshot(QueryDocumentSnapshot<Object?> doc)
     : documentId = doc.id,
       title = doc.get('title'),
-      text = doc.get('text');
+      text = doc.get('text'),
+      createdOn = doc.get('createdOn'),
+      userID = doc.get('userID');
 }
 
 class FeedScreen extends StatelessWidget {
   final User user;
 
-  const FeedScreen(this.user, {Key? key}) : super(key: key);
+  FeedScreen(this.user, {Key? key}) : super(key: key);
 
   Future<List<Post>> getPosts() async {
     QuerySnapshot posts = await FirebaseFirestore.instance.collection('posts').get();
@@ -43,14 +47,44 @@ class FeedScreen extends StatelessWidget {
   Column postToColumn(Post post) {
     Column postColumn = Column(
       children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.only(left: 30, top: 30, bottom: 10),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                post.title,
+                style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700
+                ),
+              ),
+            ),
+
+            Expanded(
+                child: Container(
+                  padding: const EdgeInsets.only(left: 30, right: 10, top: 30, bottom: 10),
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    user.email!,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400
+                    ),
+                  ),
+                ),
+            )
+          ],
+        ),
+
         Container(
-          padding: const EdgeInsets.only(left: 30, top: 30, bottom: 10),
+          padding: const EdgeInsets.only(left: 30, bottom: 10),
           alignment: Alignment.centerLeft,
           child: Text(
-              post.title,
+            DateFormat('dd/MM/yyyy').format(post.createdOn.toDate()),
             style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700
+                fontSize: 16,
+                fontWeight: FontWeight.w200
             ),
           ),
         ),

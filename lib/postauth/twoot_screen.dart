@@ -2,26 +2,30 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'package:twooter/main.dart';
-
 class TwootScreen extends StatelessWidget {
   final User user;
 
   const TwootScreen(this.user, {Key? key}) : super(key: key);
 
   void sendTwoot(String title, String text) async {
-    print(title + ' : ' + text);
-
     FirebaseFirestore.instance.runTransaction((Transaction transaction) async {
       CollectionReference reference = FirebaseFirestore.instance.collection('posts');
 
-      await reference.add({"title": title, "text": text});
+      await reference.add(
+          {
+            "title": title,
+            "text": text,
+            "createdOn": FieldValue.serverTimestamp(),
+            "userID": user.uid
+          }
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
+
 
     final titleController = TextEditingController();
     final textController = TextEditingController();
