@@ -25,6 +25,7 @@ class AccountScreen extends StatelessWidget {
           ),
         ),
         Container(
+          constraints: const BoxConstraints(maxHeight: 200),
           padding: const EdgeInsets.only(left: 50.0),
           child: Table(
             columnWidths: const {0: FlexColumnWidth(0.2)},
