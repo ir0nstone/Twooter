@@ -78,16 +78,17 @@ class _LoginFormState extends State<LoginForm> {
               if (!_formKey.currentState!.validate()) return;
 
               try {
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
+                UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                     email: emailController.text,
                     password: passwordController.text
-                ).then((userCredential) => {
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (context) => AuthenticatedPage(userCredential.user!),
-                    ),
-                  )
-                });
+                );
+
+                await Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (context) => AuthenticatedPage(userCredential.user!),
+                  ),
+                  (route) => false
+                );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
                   print('No user found for that email.');

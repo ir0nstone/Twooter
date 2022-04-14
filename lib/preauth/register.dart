@@ -106,10 +106,11 @@ class _RegisterFormState extends State<RegisterForm> {
                 DocumentReference doc = reference.doc(user.uid);
                 await doc.set({"username": usernameController.text});
 
-                Navigator.of(context).pushReplacement(
+                await Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(
                     builder: (context) => AuthenticatedPage(userCredential.user!),
                   ),
+                  (route) => false
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
