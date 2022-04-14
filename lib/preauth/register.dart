@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:twooter/postauth/authenticated.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -30,6 +33,7 @@ class RegisterForm extends StatefulWidget {
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
 
+  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -40,6 +44,20 @@ class _RegisterFormState extends State<RegisterForm> {
       key: _formKey,
       child: Column(
         children: <Widget>[
+          // Username
+          TextFormField(
+            decoration: const InputDecoration(
+              labelText: 'Username',
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+            controller: usernameController,
+          ),
+
           // Email
           TextFormField(
             decoration: const InputDecoration(
@@ -66,6 +84,9 @@ class _RegisterFormState extends State<RegisterForm> {
               return null;
             },
             controller: passwordController,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
           ),
 
           // Submit Button
@@ -74,12 +95,22 @@ class _RegisterFormState extends State<RegisterForm> {
               if (!_formKey.currentState!.validate()) return;
 
               try {
-                await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
                     email: emailController.text,
                     password: passwordController.text
                 );
 
-                Navigator.pop(context);
+                User user = userCredential.user!;
+                CollectionReference reference = FirebaseFirestore.instance.collection('users');
+
+                DocumentReference doc = reference.doc(user.uid);
+                await doc.set({"username": usernameController.text});
+
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(
+                    builder: (context) => AuthenticatedPage(userCredential.user!),
+                  ),
+                );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
                   print('Weak Password!');
