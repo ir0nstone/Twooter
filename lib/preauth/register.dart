@@ -37,6 +37,14 @@ class _RegisterFormState extends State<RegisterForm> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  String errorMsg = '';
+
+  updateErrorMsg(String error) {
+    setState(() {
+      errorMsg = error;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -89,6 +97,18 @@ class _RegisterFormState extends State<RegisterForm> {
             autocorrect: false,
           ),
 
+          Container(
+            constraints: const BoxConstraints(minHeight: 40),
+            alignment: Alignment.center,
+            child: Text(
+              errorMsg,
+              style: const TextStyle(
+                color: Colors.red,
+                fontSize: 16
+              ),
+            ),
+          ),
+
           // Submit Button
           ElevatedButton(
             onPressed: () async {
@@ -114,9 +134,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'weak-password') {
-                  print('Weak Password!');
+                  updateErrorMsg('Password Too Weak');
                 } else if (e.code == 'email-already-in-use') {
-                  print('Email in Use!');
+                  updateErrorMsg('Email in Use');
                 }
               } catch (e) {
                 print(e);
