@@ -34,6 +34,14 @@ class _LoginFormState extends State<LoginForm> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  String errorMsg = '';
+
+  updateErrorMsg(String error) {
+    setState(() {
+      errorMsg = error;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build a Form widget using the _formKey created above.
@@ -72,6 +80,18 @@ class _LoginFormState extends State<LoginForm> {
             autocorrect: false,
           ),
 
+          Container(
+            constraints: const BoxConstraints(minHeight: 40),
+            alignment: Alignment.center,
+            child: Text(
+              errorMsg,
+              style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 16
+              ),
+            ),
+          ),
+
           // Submit Button
           ElevatedButton(
             onPressed: () async {
@@ -91,9 +111,9 @@ class _LoginFormState extends State<LoginForm> {
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'user-not-found') {
-                  print('No user found for that email.');
+                  updateErrorMsg('User Not Found');
                 } else if (e.code == 'wrong-password') {
-                  print('Wrong password provided for that user.');
+                  print('Incorrect Password');
                 }
               }
             },
