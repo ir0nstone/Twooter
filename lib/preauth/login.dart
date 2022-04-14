@@ -67,6 +67,9 @@ class _LoginFormState extends State<LoginForm> {
               return null;
             },
             controller: passwordController,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
           ),
 
           // Submit Button
@@ -92,7 +95,7 @@ class _LoginFormState extends State<LoginForm> {
                   print('Wrong password provided for that user.');
                 }
               }
-          },
+            },
             child: const Text('Log In'),
           ),
         ],
