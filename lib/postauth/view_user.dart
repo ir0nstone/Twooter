@@ -1,17 +1,20 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ViewUserScreen extends StatelessWidget {
-  final User user;
+  final String userID;
 
-  const ViewUserScreen(this.user, {Key? key}) : super(key: key);
+  const ViewUserScreen(this.userID, {Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
+  Future<String> getUsername(String userID) async {
+    final userDoc = await FirebaseFirestore.instance.collection('users').doc(userID).get();
+    return userDoc.get("username");
+  }
+
+  Future<Widget> getFinalWidget(String userID) async {
+    String username = await getUsername(userID);
+
     TextStyle textStyle = const TextStyle(fontSize: 16);
-
-    String? email = user.email;
-    String uid = user.uid;
 
     Widget onLoadBody = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -25,31 +28,43 @@ class ViewUserScreen extends StatelessWidget {
         Container(
             padding: const EdgeInsets.only(left: 50.0),
             child: Table(
-                columnWidths: const {0: FlexColumnWidth(0.2)},
+                columnWidths: const {0: FlexColumnWidth(0.4)},
                 children: [
                   TableRow(
                       children: [
-                        Text('Email', style: textStyle),
-                        Text(email!, style: textStyle)
+                        Text('Username', style: textStyle),
+                        Text(username, style: textStyle)
                       ]
-                  ),
-                  TableRow(
-                      children: [
-                        Text('Uid', style: textStyle),
-                        Text(uid, style: textStyle)
-                      ]
-                  ),
+                  )
                 ]
             )
         )
       ],
     );
 
+    return onLoadBody;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: const Text('Account'),
         ),
-        body: onLoadBody
+        body: FutureBuilder(
+            future: getFinalWidget(userID),
+            builder: (context, snapshot) {
+              if (snapshot.hasError) {
+                print(snapshot.error.toString());
+              }
+              if (snapshot.connectionState == ConnectionState.done) {
+                return snapshot.data as Widget;
+              }
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+        ),
     );
   }
 }

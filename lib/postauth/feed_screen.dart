@@ -11,6 +11,7 @@ class Post {
   final String title;
   final String text;
   final Timestamp createdOn;
+  final String userID;
   final String username;
 
   const Post({
@@ -18,6 +19,7 @@ class Post {
     required this.title,
     required this.text,
     required this.createdOn,
+    required this.userID,
     required this.username
   });
 
@@ -32,9 +34,7 @@ class Post {
     final userDoc = await FirebaseFirestore.instance.collection('users').doc(_userID).get();
     final username = userDoc.get("username");
 
-    print(username);
-
-    return Post(documentId: _documentId, title: _title, text: _text, createdOn: _createdOn, username: username);
+    return Post(documentId: _documentId, title: _title, text: _text, createdOn: _createdOn, userID: _userID, username: username);
   }
 }
 
@@ -50,12 +50,7 @@ class FeedScreen extends StatelessWidget {
             (doc) async => await Post.fromSnapshot(doc)
     ).toList();
 
-    print(allData);                             // [Instance of 'Future<Post>', Instance of 'Future<Post>', Instance of 'Future<Post>']
-
     final futurePosts = Future.wait(allData);
-    print(futurePosts);                         // Instance of 'Future<List<Post>>'
-
-    // why does this always return null???
     return futurePosts;
   }
 
@@ -93,7 +88,7 @@ class FeedScreen extends StatelessWidget {
                       Navigator.push(
                           context,
                           // again, the issue here is that `user` is the current user, not the post's user
-                          MaterialPageRoute(builder: (context) => ViewUserScreen(user))
+                          MaterialPageRoute(builder: (context) => ViewUserScreen(post.userID))
                       );
                     }
                   )
@@ -151,7 +146,6 @@ class FeedScreen extends StatelessWidget {
               print(snapshot.error.toString());
             }
             if (snapshot.connectionState == ConnectionState.done) {
-              print(snapshot.data);
               return postsToColumn(context, snapshot.data as List<Post>);
             }
             return const Center(
